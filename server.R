@@ -16,7 +16,6 @@ labels <- sprintf("<strong>%s</strong><br/>%s people / km<sup>2</sup>",
   lapply(htmltools::HTML)
 
 cities <- read.csv(file = "cities.csv")
-islands <- read.csv(file = "ki_is.csv")
 
 # Define server logic required to draw a histogram
 function(input, output, session) {

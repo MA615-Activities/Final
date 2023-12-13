@@ -11,10 +11,12 @@ library(shinythemes)
 
 ui <- navbarPage(id = "tabs", 
                  title = "Brunei Darussalam", 
-                 theme = shinytheme("sandstone"),
+                 theme = shinytheme("slate"),
                  navbarMenu(title = "General Information",
                             tabPanel("About Brunei",
-                                     img(src="KR-flag.jpg", width="200"),
+                                     img(src="Flag-Brunei.jpg.webp", 
+                                         width="400",
+                                         style="display: block; margin-left: auto; margin-right: auto;"),
                                      p(style="font-size:12pt", "In the Republic of Kiribati, 
                                      more than 119,000 people live across 33 islands stretching 
                                      over 3.5 million square kilometers of the Pacific.
@@ -70,17 +72,16 @@ ui <- navbarPage(id = "tabs",
                                                                      )
                                                    )
                            ),
-                 nav_panel("SWOT", p("Analysis",
+                 nav_panel("SWOT", p("SWOT Analysis",
                                      panelsPage(
                                        panel(title = "Strengths",
+                                             collapsed = TRUE,
                                              width = 300,
-                                             hidden = TRUE,
                                              body = h1("Nothing here")
                                              ),
                                        panel(title = "Weaknesses",
+                                             collapsed = TRUE,
                                              width = 300,
-                                             color = "magenta",
-                                             hidden = FALSE,
                                              body = div(h3("Here is some info"),
                                                         hr(),
                                                         verbatimTextOutput("debug"),
@@ -102,7 +103,7 @@ ui <- navbarPage(id = "tabs",
                                              body = div(plotOutput("plot"))
                                              ),
                                        panel(title = "Threats",
-                                             can_collapse = FALSE,
+                                             collapsed = TRUE,
                                              body = div(),
                                              footer = HTML("Footer")
                                              )
