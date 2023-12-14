@@ -14,16 +14,35 @@ ui <- navbarPage(id = "tabs",
                  theme = shinytheme("slate"),
                  navbarMenu(title = "General Information",
                             tabPanel("About Brunei",
-                                     img(src="Flag-Brunei.jpg.webp", 
-                                         width="400",
-                                         style="display: block; margin-left: auto; margin-right: auto;"),
-                                     p(style="font-size:12pt", "In the Republic of Kiribati, 
-                                     more than 119,000 people live across 33 islands stretching 
-                                     over 3.5 million square kilometers of the Pacific.
-                                     The World Bank’s support to Kiribati is focused on
-                                     improving roads, sustainable fisheries,
-                                     health system strengthening, access to clean,
-                                     safe drinking water and economic growth.")
+                                     img(src=c("brunei.jpeg"),
+                                         width="300"),
+                                     img(src="Flag-Brunei.jpg.webp",
+                                         width="360"),
+                                     img(src="night.jpg",
+                                         width="450"),
+                                     h1(style="font-family: 'Georgia', serif;", "Narrative Description"),
+                                     p(style="font-size:13pt; font-family: 'Georgia', serif;", "Brunei Darussalam is a country located on the
+                                       island of Borneo in Southeast Asia's Malay Archipelago. Borneo is divided into
+                                       the two Malaysian countries of Sabah and Sarawak and the Indonesian country of
+                                       Kalimantan. Brunei, however, is the only sovereign state with a small but 
+                                       diverse population of around 460,000. The capital of Brunei is Bandar Seri Begawan
+                                       located in the northeast. The capital also contains one of the country's national
+                                       landmarks symbolizing Islamic faith, the Sultan Omar Ali Saifuddien Mosque pictured
+                                       above. Oil and natural gas have played a significant role in Brunei's development
+                                       and wealth. Despite this wealth, the country prioritizes conservation of its biodiversity
+                                       and tropical rainforests which make up more than 70% of Brunei."),
+                                     h1(style="font-family: 'Georgia', serif;", "Fun Facts"),
+                                     tags$ul(
+                                       tags$li(style="font-size:13pt; font-family: 'Georgia', serif;", "Since a substantial amount of 
+                                       evenue is generated from oil and gas reserves, Brunei is one of 16 countries without income tax."), 
+                                       tags$li(style="font-size:13pt; font-family: 'Georgia', serif;", "The Istana Nurul Iman, 
+                                               the Sultan's official residence, holds the Guinness World Record as the largest residential palace
+                                               in the world."), 
+                                       tags$li(style="font-size:13pt; font-family: 'Georgia', serif;", "The sale and consumption of 
+                                               alcohol is illegal in Brunei. Alcohol is prohibited in public but non-Muslims over 17 
+                                               years old are allowed restricted peresonal use.")
+                                       )
+                                       
                                      )
                             ),
                  navbarMenu(title = "Maps",
@@ -112,20 +131,8 @@ ui <- navbarPage(id = "tabs",
                            ),
                  navbarMenu(title = "Bibliography",
                             align = "right",
-                            tabPanel(tags$a(href="https://en.wikipedia.org/wiki/Kiribati",
-                                            "Wikipedia/Kiribati")),
-                            tabPanel(tags$a(href="https://www.shinyapps.io/",
-                                            "shinyapps.io for publishing")),
-                            tabPanel(tags$a(href="https://www.un.org/ohrlls/mvi/documents",
-                                            "Multidimensional Vulnerability Index")),
-                            tabPanel(tags$a(href = "https://kiribati.gov.ki/",
-                                            "Kiribati_gov")),
-                            tabPanel(tags$a(href="https://www.forumsec.org/",
-                                            "Pacific Islands Forum")),
-                            tabPanel(tags$a(href="https://rstudio.github.io/leaflet/",
-                                            "Leaflet doc")),
-                            tabPanel(tags$a(href="https://www.un.org/ohrlls/mvi/documents",
-                                            "Multidimensional Vulnerability Index"))
+                            tabPanel(tags$a(href="https://en.wikipedia.org/wiki/Brunei",
+                                            "Brunei Wikipedia"))
                             )
                  )
 
