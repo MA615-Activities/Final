@@ -68,68 +68,307 @@ function(input, output, session) {
       pack_rows("Female", 9, 9) %>% 
       pack_rows("Persons", 10, 10) %>% 
       pack_rows("Male", 11, 11) %>% 
-      pack_rows("Female", 12, 12)
+      pack_rows("Female", 12, 12) %>% 
+      scroll_box(width = "1500px", height = "500px")
     )
   })
-
+  
+  output$religiontable <- renderUI({
     
+    # Create the table (using table from htmlTables doc as example)
+    reli <- read_csv("religion.csv")
+    colnames(reli) <- c("Religion", "Brunei", "South-Eastern Asia", "The World")
+    
+    HTML(
+      kbl(reli) %>% 
+        kable_classic(full_width = T, html_font = "Cambria") %>%
+        scroll_box(width = "1500px", height = "500px")
+    )
+  })
+  
+  gdp <- reactive({
+    if(input$countries == "Brunei"){
+      gdp <- read_csv("gdp.csv")
+      gdp <- gdp %>% select(-c(2,3,4))
+      brunei <- gdp %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "gdp") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      gdp <- brunei %>% ggplot(aes(as.integer(year), gdp/1000000000)) +
+        geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
+        geom_line(group = 1, color="grey") +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range1[1]+1, input$range1[2]-1)) +
+        labs(x = "Year", y = "GDP (Billion)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      plot <- gdp
+    }
+    if(input$countries == "Brunei & Timor-Leste"){
+      gdp2 <- read_csv("gdp.csv")
+      gdp2 <- gdp2 %>% select(-c(2,3,4))
+      brunei <- gdp2 %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "bruneigdp") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      timor <- read_csv("timorgdp.csv")
+      timor <- timor %>% select(-c(2,3,4))
+      timor <- gdp2 %>% filter(`Country Name`=="Timor-Leste")
+      timor <- timor %>% pivot_longer(!`Country Name`, 
+                                      names_to = "year", 
+                                      values_to = "timorgdp") %>% 
+        select(-`Country Name`)
+      timor <- timor[-c(1:5, 64),]
+      data <- cbind(brunei, timor)
+      data <- data %>% pivot_longer(!year, names_to = "Country", values_to = "gdp")
+      data$gdp <- data$gdp/1000000000
+      data$Country <- str_replace(data$Country, "bruneigdp", "Brunei")
+      data$Country <- str_replace(data$Country, "timorgdp", "Timor-Leste")
+      
+      gdp2 <- data %>% ggplot(aes(as.integer(year), gdp)) +
+        geom_line(aes(color=Country), lwd = 2) +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range1[1]+1, input$range1[2]-1)) +
+        labs(x = "Year", y = "GDP (Billion)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      plot <- gdp2
+    }
+    if(input$countries=="Brunei & Indonesia"){
+      gdp3 <- read_csv("gdp.csv")
+      gdp3 <- gdp3 %>% select(-c(2,3,4))
+      brunei <- gdp3 %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "bruneigdp") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      indo <- read_csv("indogdp.csv")
+      indo <- indo %>% select(-c(2,3,4))
+      indo <- gdp3 %>% filter(`Country Name`=="Indonesia")
+      indo <- indo %>% pivot_longer(!`Country Name`, 
+                                      names_to = "year", 
+                                      values_to = "indogdp") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      indo <- rbind(NA, NA, indo)
+      indo[1,1] <- "1965"
+      indo[2,1] <- "1966"
+      data <- cbind(brunei, indo)
+      data <- data %>% pivot_longer(!year, names_to = "Country", values_to = "gdp")
+      data$gdp <- data$gdp/1000000000
+      data$Country <- str_replace(data$Country, "bruneigdp", "Brunei")
+      data$Country <- str_replace(data$Country, "indogdp", "Indonesia")
+      
+      gdp3 <- data %>% ggplot(aes(as.integer(year), gdp)) +
+        geom_line(aes(color=Country), lwd = 2) +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range1[1]+1, input$range1[2]-1)) +
+        labs(x = "Year", y = "GDP (Billion)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      plot <- gdp3
+    }
+    return(plot)
+  })
+  
   output$gdpplot <- renderPlot({
-    gdp <- read_csv("gdp.csv")
-    gdp <- gdp %>% select(-c(2,3,4))
-    brunei <- gdp %>% filter(`Country Name`=="Brunei Darussalam")
-    brunei <- brunei %>% pivot_longer(!`Country Name`, 
-                                      names_to = "year", 
-                                      values_to = "gdp") %>% 
-      select(-`Country Name`) %>% 
-      na.omit()
-    gdp <- brunei %>% ggplot(aes(as.integer(year), gdp/1000000000)) +
-      geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
-      geom_line(group = 1, color="grey") +
-      theme_bw() +
-      coord_cartesian(xlim = c(input$range1[1]+1, input$range1[2]-1)) +
-      labs(x = "Year", y = "GDP (Billion)") +
-      theme(axis.text = element_text(size = 16),
-            axis.title = element_text(size = 18))
-    gdp
+    gdp()
     })
+  
+  
+  co2 <- reactive({
+    if(input$countries2 == "Brunei"){
+      co2 <- read_csv("co2.csv")
+      co2 <- co2 %>% select(-c(2,3,4))
+      brunei <- co2 %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "co2") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      co2 <- brunei %>% ggplot(aes(as.integer(year), co2)) +
+        geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
+        geom_line(group = 1, color="grey") +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range2[1]+1, input$range2[2]-1)) +
+        labs(x = "Year", y = "CO2 Emissions (metric ton per capita)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      plot <- co2
+    }
+    if(input$countries2 == "Brunei & Timor-Leste"){
+      co2 <- read_csv("co2.csv")
+      co2 <- co2 %>% select(-c(2,3,4))
+      brunei <- co2 %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "bruneico2") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      co22 <- read_csv("timorco2.csv")
+      co22 <- co22 %>% select(-c(2,3,4))
+      timor <- co22 %>% filter(`Country Name`=="Timor-Leste")
+      timor <- timor %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "timorco2") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      data <- cbind(brunei, timor)
+      data <- data %>% pivot_longer(!year, names_to = "Country", values_to = "co2")
+      data$Country <- str_replace(data$Country, "bruneico2", "Brunei")
+      data$Country <- str_replace(data$Country, "timorco2", "Timor-Leste")
+      
+      co22 <- data %>% ggplot(aes(as.integer(year), co2)) +
+        geom_line(aes(color=Country), lwd = 2) +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range2[1]+1, input$range2[2]-1)) +
+        labs(x = "Year", y = "CO2 Emissions (metric ton per capita)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      
+      plot <- co22
+    }
+    if(input$countries2=="Brunei & Indonesia"){
+      co2 <- read_csv("co2.csv")
+      co2 <- co2 %>% select(-c(2,3,4))
+      brunei <- co2 %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "bruneico2") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      co23 <- read_csv("indoco2.csv")
+      co23 <- co23 %>% select(-c(2,3,4))
+      indo <- co23 %>% filter(`Country Name`=="Indonesia")
+      indo <- indo %>% pivot_longer(!`Country Name`, 
+                                      names_to = "year", 
+                                      values_to = "indoco2") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      data <- cbind(brunei, indo)
+      data <- data %>% pivot_longer(!year, names_to = "Country", values_to = "co2")
+      data$Country <- str_replace(data$Country, "bruneico2", "Brunei")
+      data$Country <- str_replace(data$Country, "indoco2", "Indonesia")
+      
+      co23 <- data %>% ggplot(aes(as.integer(year), co2)) +
+        geom_line(aes(color=Country), lwd = 2) +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range2[1]+1, input$range2[2]-1)) +
+        labs(x = "Year", y = "CO2 Emissions (metric ton per capita)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      
+      plot <- co23
+      
+    }
+    return(plot)
+  })
+  
+  
   output$co2plot <- renderPlot({
-    co2 <- read_csv("co2.csv")
-    co2 <- co2 %>% select(-c(2,3,4))
-    brunei <- co2 %>% filter(`Country Name`=="Brunei Darussalam")
-    brunei <- brunei %>% pivot_longer(!`Country Name`, 
+    co2()
+  })  
+  
+  oil <- reactive({
+    if(input$countries3 == "Brunei"){
+      oil <- read_csv("oil.csv")
+      oil <- oil %>% select(-c(2,3,4))
+      brunei <- oil %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "oil") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      oil <- brunei %>% ggplot(aes(as.integer(year), oil)) +
+        geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
+        geom_line(group = 1, color="grey") +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range3[1]+1, input$range3[2]-1)) +
+        labs(x = "Year", y = "Oil Rents (% of GDP)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      plot <- oil
+    }
+    if(input$countries3 == "Brunei & Timor-Leste"){
+      oil <- read_csv("oil.csv")
+      oil <- oil %>% select(-c(2,3,4))
+      brunei <- oil %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "bruneioil") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      oil2 <- read_csv("timoroil.csv")
+      oil2 <- oil2 %>% select(-c(2,3,4))
+      timor <- oil2 %>% filter(`Country Name`=="Timor-Leste")
+      timor <- timor %>% pivot_longer(!`Country Name`, 
                                       names_to = "year", 
-                                      values_to = "co2") %>% 
-      select(-`Country Name`) %>% 
-      na.omit()
-    co2 <- brunei %>% ggplot(aes(as.integer(year), co2)) +
-      geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
-      geom_line(group = 1, color="grey") +
-      theme_bw() +
-      coord_cartesian(xlim = c(input$range2[1]+1, input$range2[2]-1)) +
-      labs(x = "Year", y = "CO2 Emissions (metric ton per capita)") +
-      theme(axis.text = element_text(size = 16),
-            axis.title = element_text(size = 18))
-    co2
+                                      values_to = "timoroil") %>% 
+        select(-`Country Name`)
+      timor <- timor[-c(1:10, 20, 63, 64),]
+      data <- cbind(brunei, timor)
+      data <- data %>% pivot_longer(!year, names_to = "Country", values_to = "oil")
+      data$Country <- str_replace(data$Country, "bruneioil", "Brunei")
+      data$Country <- str_replace(data$Country, "timoroil", "Timor-Leste")
+      
+      oil2 <- data %>% ggplot(aes(as.integer(year), oil)) +
+        geom_line(aes(color=Country), lwd = 2) +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range3[1]+1, input$range3[2]-1)) +
+        labs(x = "Year", y = "Oil Rents (% of GDP)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+
+      plot <- oil2
+    }
+    if(input$countries3 == "Brunei & Indonesia"){
+      oil <- read_csv("oil.csv")
+      oil <- oil %>% select(-c(2,3,4))
+      brunei <- oil %>% filter(`Country Name`=="Brunei Darussalam")
+      brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                        names_to = "year", 
+                                        values_to = "bruneioil") %>% 
+        select(-`Country Name`) %>% 
+        na.omit()
+      oil3 <- read_csv("indooil.csv")
+      oil3 <- oil3 %>% select(-c(2,3,4))
+      indo <- oil3 %>% filter(`Country Name`=="Indonesia")
+      indo <- indo %>% pivot_longer(!`Country Name`, 
+                                      names_to = "year", 
+                                      values_to = "indooil") %>% 
+        select(-`Country Name`)
+      indo <- indo[-c(1:10, 20, 63, 64),]
+      data <- cbind(brunei, indo)
+      data <- data %>% pivot_longer(!year, names_to = "Country", values_to = "oil")
+      data$Country <- str_replace(data$Country, "bruneioil", "Brunei")
+      data$Country <- str_replace(data$Country, "indooil", "Indonesia")
+      
+      oil3 <- data %>% ggplot(aes(as.integer(year), oil)) +
+        geom_line(aes(color=Country), lwd = 2) +
+        theme_bw() +
+        coord_cartesian(xlim = c(input$range3[1]+1, input$range3[2]-1)) +
+        labs(x = "Year", y = "Oil Rents (% of GDP)") +
+        theme(axis.text = element_text(size = 16),
+              axis.title = element_text(size = 18))
+      
+      plot <- oil3
+    }
+    return(plot)
   })
+  
+  
+  
   output$oilplot <- renderPlot({
-    oil <- read_csv("oil.csv")
-    oil <- oil %>% select(-c(2,3,4))
-    brunei <- oil %>% filter(`Country Name`=="Brunei Darussalam")
-    brunei <- brunei %>% pivot_longer(!`Country Name`, 
-                                      names_to = "year", 
-                                      values_to = "oil") %>% 
-      select(-`Country Name`) %>% 
-      na.omit()
-    oil <- brunei %>% ggplot(aes(as.integer(year), oil)) +
-      geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
-      geom_line(group = 1, color="grey") +
-      theme_bw() +
-      coord_cartesian(xlim = c(input$range3[1]+1, input$range3[2]-1)) +
-      labs(x = "Year", y = "Oil Rents (% of GDP)") +
-      theme(axis.text = element_text(size = 16),
-            axis.title = element_text(size = 18))
-    oil
-  })
+    oil()
+  })  
+  
+  
+  
   output$worldmap <- renderLeaflet({
     leaflet()  %>%
       addProviderTiles(providers$Esri.NatGeoWorldMap) %>%

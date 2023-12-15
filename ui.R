@@ -10,10 +10,9 @@ library(shinyBS)
 library(shinyWidgets)
 
 
-
 ui <- navbarPage(id = "tabs", 
                  title = "Brunei Darussalam", 
-                 #theme = shinytheme("slate"),
+                 theme = shinytheme("slate"),
                  navbarMenu(title = "General Information",
                             tabPanel("About Brunei",
                                      img(src=c("brunei.jpeg"),
@@ -71,8 +70,10 @@ ui <- navbarPage(id = "tabs",
                  ),
                  nav_panel("Demographics",
                            tabsetPanel(
-                             tabPanel("Population",
-                                      htmlOutput("demotable"))
+                             tabPanel("Population by Gender & Ethnicity",
+                                      htmlOutput("demotable")),
+                             tabPanel("Religion",
+                                      htmlOutput("religiontable"))
                            )
                            ),
                  nav_panel("Pacific Region", 
@@ -82,14 +83,25 @@ ui <- navbarPage(id = "tabs",
                                         sliderTextInput("range1", "Year Range:",
                                                         choices = 1965:2022,
                                                         selected = c(1965,2022)
-                                        )
+                                        ),
+                                        selectInput("countries", "Countries:",
+                                                    c("Brunei",
+                                                      "Brunei & Timor-Leste",
+                                                      "Brunei & Indonesia")
+                                                    )
+                                        ),
+                                      plotOutput("gdpplot")
                                       ),
-                                      plotOutput("gdpplot")),
-                             tabPanel("CO2 Emissions", 
+                            tabPanel("CO2 Emissions", 
                                       sidebarPanel(
                                         sliderTextInput("range2", "Year Range:",
                                                         choices = 1990:2020,
                                                         selected = c(1990,2020)
+                                        ),
+                                        selectInput("countries2", "Countries:",
+                                                    c("Brunei",
+                                                      "Brunei & Timor-Leste",
+                                                      "Brunei & Indonesia")
                                         )
                                       ),
                                       plotOutput("co2plot")),
@@ -98,6 +110,11 @@ ui <- navbarPage(id = "tabs",
                                         sliderTextInput("range3", "Year Range:",
                                                         choices = 1970:2021,
                                                         selected = c(1970,2021)
+                                        ),
+                                        selectInput("countries3", "Countries:",
+                                                    c("Brunei",
+                                                      "Brunei & Timor-Leste",
+                                                      "Brunei & Indonesia")
                                         )
                                       ),
                                       plotOutput("oilplot"))
@@ -105,7 +122,7 @@ ui <- navbarPage(id = "tabs",
                            ),
                  nav_panel("SWOT", p("SWOT Analysis",
                                      panelsPage(
-                                       panel(title = "Strengths",
+                                       shinypanels::panel(title = "Strengths",
                                              collapsed = TRUE,
                                              width = 300,
                                              body = div(h3(style="font-family: 'Georgia', serif;",
@@ -136,10 +153,13 @@ ui <- navbarPage(id = "tabs",
                                                           tags$li(style="font-size:13pt; font-family: 'Georgia', serif;", 
                                                                   "The strong influence of Malay and Islamic culture and
                                                                   traditions attracts many tourists.")
-                                                          )
+                                                          ),
+                                                        img(src="culture.jpeg",
+                                                            width="300",
+                                                            style="display: block; margin-left: auto; margin-right: auto;")
                                                         )
                                              ),
-                                       panel(title = "Weaknesses",
+                                       shinypanels::panel(title = "Weaknesses",
                                              collapsed = TRUE,
                                              width = 300,
                                              body = div(h3(style="font-family: 'Georgia', serif;",
@@ -151,6 +171,9 @@ ui <- navbarPage(id = "tabs",
                                                                   dependence also hinders diversification as it hinders the
                                                                   development of other sectors.")
                                                           ),
+                                                        img(src="oil.jpeg",
+                                                            width="300",
+                                                            style="display: block; margin-left: auto; margin-right: auto;"),
                                                         h3(style="font-family: 'Georgia', serif;",
                                                            "Limited Workforce"),
                                                         tags$ul(
@@ -160,7 +183,7 @@ ui <- navbarPage(id = "tabs",
                                                           )
                                                         )
                                              ),
-                                       panel(title = "Opportunities",
+                                       shinypanels::panel(title = "Opportunities",
                                              width = 350,
                                              collapsed = TRUE,
                                              body = div(h3(style="font-family: 'Georgia', serif;",
@@ -171,6 +194,9 @@ ui <- navbarPage(id = "tabs",
                                                                   into sectors like tourism, technology, and renewable energy
                                                                   to reduce dependency on oil and natural gases.")
                                                           ),
+                                                        img(src="tourism.png",
+                                                            width="290",
+                                                            style="display: block; margin-left: auto; margin-right: auto;"),
                                                         h3(style="font-family: 'Georgia', serif;",
                                                            "Infrastructure"),
                                                         tags$ul(
@@ -188,7 +214,7 @@ ui <- navbarPage(id = "tabs",
                                                           )
                                                         )
                                              ),
-                                       panel(title = "Threats",
+                                       shinypanels::panel(title = "Threats",
                                              collapsed = TRUE,
                                              body = div(h3(style="font-family: 'Georgia', serif;",
                                                            "Global Economic Changes"),
@@ -204,6 +230,9 @@ ui <- navbarPage(id = "tabs",
                                                                   "Factors like deforestation, pollution, and loss of biodiversity
                                                                   threaten Brunei's natural resources and ecosystems.")
                                                           ),
+                                                        img(src="forest.jpeg",
+                                                            width="300",
+                                                            style="display: block; margin-left: auto; margin-right: auto;"),
                                                         h3(style="font-family: 'Georgia', serif;",
                                                            "Competition"),
                                                         tags$ul(
@@ -220,7 +249,9 @@ ui <- navbarPage(id = "tabs",
                  navbarMenu(title = "Bibliography",
                             align = "right",
                             tabPanel(tags$a(href="https://en.wikipedia.org/wiki/Brunei",
-                                            "Brunei Wikipedia"))
+                                            "Brunei Wikipedia")),
+                            tabPanel(tags$a(href="https://data.worldbank.org/country/brunei-darussalam",
+                                            "The World Bank"))
                             )
                  )
 
