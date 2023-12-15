@@ -13,7 +13,7 @@ library(shinyWidgets)
 
 ui <- navbarPage(id = "tabs", 
                  title = "Brunei Darussalam", 
-                 theme = shinytheme("slate"),
+                 #theme = shinytheme("slate"),
                  navbarMenu(title = "General Information",
                             tabPanel("About Brunei",
                                      img(src=c("brunei.jpeg"),
@@ -70,8 +70,12 @@ ui <- navbarPage(id = "tabs",
                             )
                  ),
                  nav_panel("Demographics",
-                           
-                           # Show a plot of the generated distribution
+                           tabsetPanel(
+                             tabPanel("Population",
+                                      htmlOutput("demotable"))
+                           )
+                           ),
+                 nav_panel("Pacific Region", 
                            tabsetPanel(
                              tabPanel("GDP", 
                                       sidebarPanel(
@@ -89,33 +93,19 @@ ui <- navbarPage(id = "tabs",
                                         )
                                       ),
                                       plotOutput("co2plot")),
-                             tabPanel("Table")
-                           )
-                           ),
-                 nav_panel("Pacific Region", p("A regional map goes here. Be sure to include comparisons -- maybe a table,
-                                                definitely different graphs"),
-                           shinydashboardPlus::box(solidHeader = FALSE,
-                                                   title = "Status summary",
-                                                   background = NULL,
-                                                   width = 4,
-                                                   status = "danger",
-                                                   footer = fluidRow(column(width = 6,
-                                                                            descriptionBlock(number = "17%",
-                                                                                             numberColor = "green",
-                                                                                             numberIcon = icon("caret-up"),
-                                                                                             header = "$35,210.43",
-                                                                                             text = "TOTAL REVENUE",
-                                                                                             rightBorder = TRUE,
-                                                                                             marginBottom = FALSE
-                                                                                             )
-                                                                           )
-                                                                     )
-                                                   )
+                             tabPanel("Oil Rents", 
+                                      sidebarPanel(
+                                        sliderTextInput("range3", "Year Range:",
+                                                        choices = 1970:2021,
+                                                        selected = c(1970,2021)
+                                        )
+                                      ),
+                                      plotOutput("oilplot"))
+                             )
                            ),
                  nav_panel("SWOT", p("SWOT Analysis",
                                      panelsPage(
                                        panel(title = "Strengths",
-                                                       style = "success",
                                              collapsed = TRUE,
                                              width = 300,
                                              body = div(h3(style="font-family: 'Georgia', serif;",
