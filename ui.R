@@ -7,6 +7,7 @@ library(shinydashboardPlus)
 library(leaflet)
 library(shinythemes)
 library(shinyBS)
+library(shinyWidgets)
 
 
 
@@ -68,9 +69,28 @@ ui <- navbarPage(id = "tabs",
                                      p()
                             )
                  ),
-                 nav_panel("Demographics", 
-                           p("Tables and plots go here."),
-                           shinypanels::box("box", colapsed=F)
+                 nav_panel("Demographics",
+                           
+                           # Show a plot of the generated distribution
+                           tabsetPanel(
+                             tabPanel("GDP", 
+                                      sidebarPanel(
+                                        sliderTextInput("range1", "Year Range:",
+                                                        choices = 1965:2022,
+                                                        selected = c(1965,2022)
+                                        )
+                                      ),
+                                      plotOutput("gdpplot")),
+                             tabPanel("CO2 Emissions", 
+                                      sidebarPanel(
+                                        sliderTextInput("range2", "Year Range:",
+                                                        choices = 1990:2020,
+                                                        selected = c(1990,2020)
+                                        )
+                                      ),
+                                      plotOutput("co2plot")),
+                             tabPanel("Table")
+                           )
                            ),
                  nav_panel("Pacific Region", p("A regional map goes here. Be sure to include comparisons -- maybe a table,
                                                 definitely different graphs"),

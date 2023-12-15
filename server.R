@@ -1,4 +1,7 @@
 library(geojsonio)
+library(hrbrthemes)
+library(tidyverse)
+library(tidyquant)
 
 brunei <- list(lat = 4.5353, lng = 114.7277)
 
@@ -17,15 +20,52 @@ labels <- sprintf("<strong>%s</strong><br/>%s people / km<sup>2</sup>",
 
 cities <- read.csv(file = "cities.csv")
 
+
+
 # Define server logic required to draw a histogram
 function(input, output, session) {
   output$debug <- renderPrint({
     cat(paste(c("La", "casa", "en", "el", "árbol"),
               collapse = "\n"))
     })
-  output$plot <- renderPlot(
-    plot(cars)
-    )
+  output$gdpplot <- renderPlot({
+    gdp <- read_csv("gdp.csv")
+    gdp <- gdp %>% select(-c(2,3,4))
+    brunei <- gdp %>% filter(`Country Name`=="Brunei Darussalam")
+    brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                      names_to = "year", 
+                                      values_to = "gdp") %>% 
+      select(-`Country Name`) %>% 
+      na.omit()
+    gdp <- brunei %>% ggplot(aes(as.integer(year), gdp/1000000000)) +
+      geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
+      geom_line(group = 1, color="grey") +
+      theme_bw() +
+      coord_cartesian(xlim = c(input$range1[1], input$range1[2])) +
+      labs(x = "Year", y = "GDP (Billion)") +
+      theme(axis.text = element_text(size = 16),
+            axis.title = element_text(size = 18))
+    gdp
+    })
+  output$co2plot <- renderPlot({
+    co2 <- read_csv("co2.csv")
+    co2 <- co2 %>% select(-c(2,3,4))
+    brunei <- co2 %>% filter(`Country Name`=="Brunei Darussalam")
+    brunei <- brunei %>% pivot_longer(!`Country Name`, 
+                                      names_to = "year", 
+                                      values_to = "co2") %>% 
+      select(-`Country Name`) %>% 
+      na.omit()
+    co2 <- brunei %>% ggplot(aes(as.integer(year), co2)) +
+      geom_point(shape=21, color="black", fill="#69b3a2", size=4) +
+      geom_line(group = 1, color="grey") +
+      theme_bw() +
+      coord_cartesian(xlim = c(input$range2[1], input$range2[2])) +
+      labs(x = "Year", y = "CO2 Emissions (metric ton per capita)") +
+      theme(axis.text = element_text(size = 16),
+            axis.title = element_text(size = 18))
+    co2
+  })
   output$worldmap <- renderLeaflet({
     leaflet()  %>%
       addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
@@ -48,7 +88,7 @@ function(input, output, session) {
           bringToFront = TRUE),
         label = labels
         ) %>% 
-      addLegend(pal = pal, values = ~region_density, opacity = 0.7, title = "Population Density",
+      leaflet::addLegend(pal = pal, values = ~region_density, opacity = 0.7, title = "Population Density",
                        position = "topright") %>%
       setView(lng = brunei$lng, lat = brunei$lat, zoom = 9)
   })
