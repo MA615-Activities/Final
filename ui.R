@@ -76,7 +76,7 @@ ui <- navbarPage(id = "tabs",
                                       htmlOutput("religiontable"))
                            )
                            ),
-                 nav_panel("Pacific Region", 
+                 nav_panel("Maritime Southeast Asia Region", 
                            tabsetPanel(
                              tabPanel("GDP", 
                                       sidebarPanel(
