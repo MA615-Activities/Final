@@ -47,17 +47,20 @@ ui <- navbarPage(id = "tabs",
                                      )
                             ),
                  navbarMenu(title = "Maps",
-                            tabPanel("Regions of the South China Sea",
+                            tabPanel("Regions of Maritime Southeast Asia",
                                      img(src="South-China-Sea-Map.jpg",
                                          height="550",
                                          style="display: block; margin-left: auto; margin-right: auto;"
                                      ),
-                                     p()
+                                     p(style="font-size:13pt; font-family: 'Georgia', serif;", "Brunei is an island state located on the
+                                       larger island of Borneo in Southeast Asia. Brunei is bordered in the north by the South China Sea
+                                       and Malaysia elsewhere. Other island countries in this region include Indonesia which encompass parts 
+                                       of Borneo, Timor-Leste near the southern parts of Indonesia, the Philippines northeast of Brunei, and 
+                                       Singapore at the southern tip of the Malay Peninsula.")
                             ),
                             tabPanel("Brunei World Location",
                                      leafletOutput("worldmap", height = 700),
-                                     p()
-                                     #actionButton("recalc", "New points")
+                                     
                                      ),
                             tabPanel("Regional Map",
                                      leafletOutput("regionalmap", height = 700),
@@ -71,9 +74,21 @@ ui <- navbarPage(id = "tabs",
                  nav_panel("Demographics",
                            tabsetPanel(
                              tabPanel("Population by Gender & Ethnicity",
-                                      htmlOutput("demotable")),
+                                      htmlOutput("demotable"),
+                                      p(style="font-size:13pt; font-family: 'Georgia', serif;", "This demographic table shows
+                                        the population in thousands of people distributed in the different regions of Brunei
+                                        by gender and ethnicity. From this table, we can see that the most populated region
+                                        is Brunei Maura which is where the capital is located. Additionally, from these
+                                        four recorded years, the majority of citizens in all regions of Brunei are males and
+                                        the largest ethnic group is Malay.")),
                              tabPanel("Religion",
-                                      htmlOutput("religiontable"))
+                                      htmlOutput("religiontable"),
+                                      p(style="font-size:13pt; font-family: 'Georgia', serif;", "This demographic table shows
+                                        the percentage of Brunei's population that is each religious group and compares to religious
+                                        group distribution in South-Eastern Asia and the world. While the largest religious group
+                                        in the world is Christians, in Brunei and all of South-Eastern Asia, the largest religious
+                                        group is Muslims, most being Sunnis. The official religion of Brunei is Islam and most of
+                                        the country's festivals and events revolve around the religion."))
                            )
                            ),
                  nav_panel("Maritime Southeast Asia Region", 
@@ -90,7 +105,13 @@ ui <- navbarPage(id = "tabs",
                                                       "Brunei & Indonesia")
                                                     )
                                         ),
-                                      plotOutput("gdpplot")
+                                      mainPanel(plotOutput("gdpplot")),
+                                      p(style="font-size:13pt; font-family: 'Georgia', serif;", "These graphs show the Gross
+                                          Domestic Product in billions of dollars for Brunei and compares it to the GDP of
+                                          Timor-Leste and Indonesia which are other island countries in the region. Timor-Leste
+                                          is a much larger country than Brunei with over two times the population of Brunei. Yet
+                                          according to recent years' data, the GDP or economic wealth of Brunei is more than 5
+                                          billion dollars larger than Timor-Leste.")
                                       ),
                             tabPanel("CO2 Emissions", 
                                       sidebarPanel(
@@ -104,7 +125,12 @@ ui <- navbarPage(id = "tabs",
                                                       "Brunei & Indonesia")
                                         )
                                       ),
-                                      plotOutput("co2plot")),
+                                     mainPanel(plotOutput("co2plot")),
+                                     p(style="font-size:13pt; font-family: 'Georgia', serif;", "These graphs show the Carbon Dioxide
+                                          emissions in metric tons per capita for Brunei and compares it to the CO2 emissions of
+                                          Timor-Leste and Indonesia. Although Brunei is a much smaller country compared to Timor-Leste
+                                          and Indonesia, Brunei still produces over 5 times more CO2 emissions.")
+                                      ),
                              tabPanel("Oil Rents", 
                                       sidebarPanel(
                                         sliderTextInput("range3", "Year Range:",
@@ -117,7 +143,12 @@ ui <- navbarPage(id = "tabs",
                                                       "Brunei & Indonesia")
                                         )
                                       ),
-                                      plotOutput("oilplot"))
+                                      mainPanel(plotOutput("oilplot")),
+                                      p(style="font-size:13pt; font-family: 'Georgia', serif;", "These graphs show the Oil Rents for 
+                                          Brunei and compares it to the CO2 emissions of Timor-Leste and Indonesia. The World
+                                          Bank defines oil rents as the difference between the value of crude oil production at 
+                                          regional prices and the total cost of production.")
+                                      )
                              )
                            ),
                  nav_panel("SWOT", p("SWOT Analysis",
@@ -251,7 +282,9 @@ ui <- navbarPage(id = "tabs",
                             tabPanel(tags$a(href="https://en.wikipedia.org/wiki/Brunei",
                                             "Brunei Wikipedia")),
                             tabPanel(tags$a(href="https://data.worldbank.org/country/brunei-darussalam",
-                                            "The World Bank"))
+                                            "The World Bank")),
+                            tabPanel(tags$a(href="https://deps.mofe.gov.bn/SitePages/Population.aspx",
+                                            "Demographic Data"))
                             )
                  )
 

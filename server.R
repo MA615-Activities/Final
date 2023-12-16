@@ -27,10 +27,6 @@ cities <- read.csv(file = "cities.csv")
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
-  output$debug <- renderPrint({
-    cat(paste(c("La", "casa", "en", "el", "árbol"),
-              collapse = "\n"))
-    })
   
   output$demotable <- renderUI({
     
@@ -69,7 +65,7 @@ function(input, output, session) {
       pack_rows("Persons", 10, 10) %>% 
       pack_rows("Male", 11, 11) %>% 
       pack_rows("Female", 12, 12) %>% 
-      scroll_box(width = "1500px", height = "500px")
+      scroll_box(width = "1500px", height = "450px")
     )
   })
   
@@ -77,12 +73,12 @@ function(input, output, session) {
     
     # Create the table (using table from htmlTables doc as example)
     reli <- read_csv("religion.csv")
-    colnames(reli) <- c("Religion", "Brunei", "South-Eastern Asia", "The World")
+    colnames(reli) <- c("Religious Group", "Brunei", "South-Eastern Asia", "The World")
     
     HTML(
       kbl(reli) %>% 
         kable_classic(full_width = T, html_font = "Cambria") %>%
-        scroll_box(width = "1500px", height = "500px")
+        scroll_box(width = "1500px", height = "450px")
     )
   })
   
