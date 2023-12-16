@@ -5,13 +5,11 @@ library(tidyquant)
 library(kableExtra)
 library(htmlTable)
 
-
+#brunei lat and long
 brunei <- list(lat = 4.5353, lng = 114.7277)
-
-brunei_polys <- geojson_read("polys.json", what="sp")
-
+#polygons of brunei for regional leaflet map
 all_polys <- geojson_read("admin1.geojson", what="sp")
-
+##density of Brunei regions of regional map
 region_density <- c("24.06", "510", "7.242", "40.49")
 bins <- c(0, 10, 30, 50, 300, 600)
 pal <- colorBin("YlOrRd", domain = as.numeric(region_density), bins = bins)
@@ -27,7 +25,7 @@ cities <- read.csv(file = "cities.csv")
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
-  
+  #gender and ethnicity demographic table
   output$demotable <- renderUI({
     
     # Create the table (using table from htmlTables doc as example)
@@ -43,7 +41,7 @@ function(input, output, session) {
     }
     demo <- apply(demo, 2, num)
     demo[,1:ncol(demo)] <- demo[,1:ncol(demo)]/1000
-    
+    #html table
     HTML(
     kbl(demo, col.names = NULL) %>% 
       kable_classic(full_width = F, html_font = "Cambria") %>% 
@@ -68,20 +66,19 @@ function(input, output, session) {
       scroll_box(width = "1500px", height = "450px")
     )
   })
-  
+  #religion demographic table
   output$religiontable <- renderUI({
     
-    # Create the table (using table from htmlTables doc as example)
     reli <- read_csv("religion.csv")
     colnames(reli) <- c("Religious Group", "Brunei", "South-Eastern Asia", "The World")
-    
+    #html table
     HTML(
       kbl(reli) %>% 
         kable_classic(full_width = T, html_font = "Cambria") %>%
         scroll_box(width = "1500px", height = "450px")
     )
   })
-  
+  #different gdp graphs in regional comparison
   gdp <- reactive({
     if(input$countries == "Brunei"){
       gdp <- read_csv("gdp.csv")
@@ -176,7 +173,7 @@ function(input, output, session) {
     gdp()
     })
   
-  
+  #different co2 graphs in regional comparison
   co2 <- reactive({
     if(input$countries2 == "Brunei"){
       co2 <- read_csv("co2.csv")
@@ -270,6 +267,7 @@ function(input, output, session) {
     co2()
   })  
   
+  #different oil graphs in regional comparison
   oil <- reactive({
     if(input$countries3 == "Brunei"){
       oil <- read_csv("oil.csv")
@@ -357,20 +355,18 @@ function(input, output, session) {
     return(plot)
   })
   
-  
-  
   output$oilplot <- renderPlot({
     oil()
   })  
   
-  
-  
+  #leaflet map of location in the world
   output$worldmap <- renderLeaflet({
     leaflet()  %>%
       addProviderTiles(providers$Esri.NatGeoWorldMap) %>%
       setView(lng = brunei$lng, lat = brunei$lat, zoom = 2) %>%
       addMarkers(lng = brunei$lng, lat = brunei$lat, label = "Brunei Darussalam")
     })
+  #leaflet map of different regions in Brunei and density
   output$regionalmap <- renderLeaflet({
     leaflet(subset(all_polys, country == "Brunei"))  %>%
       addProviderTiles(providers$CartoDB.PositronNoLabels) %>% 
@@ -391,6 +387,7 @@ function(input, output, session) {
                        position = "topright") %>%
       setView(lng = brunei$lng, lat = brunei$lat, zoom = 9)
   })
+  #leaflet map of cities in Brunei
   output$countrymap <- renderLeaflet({
     leaflet()  %>%
       addProviderTiles(providers$Esri.WorldGrayCanvas) %>%

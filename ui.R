@@ -13,14 +13,17 @@ library(shinyWidgets)
 ui <- navbarPage(id = "tabs", 
                  title = "Brunei Darussalam", 
                  theme = shinytheme("slate"),
+                 #general info menu tab
                  navbarMenu(title = "General Information",
                             tabPanel("About Brunei",
+                                     #images
                                      img(src=c("brunei.jpeg"),
                                          width="300"),
                                      img(src="Flag-Brunei.jpg.webp",
                                          width="360"),
                                      img(src="night.jpg",
                                          width="450"),
+                                     #brief description of country
                                      h1(style="font-family: 'Georgia', serif;", "Narrative Description"),
                                      p(style="font-size:13pt; font-family: 'Georgia', serif;", "Brunei Darussalam is a country located on the
                                        island of Borneo in Southeast Asia's Malay Archipelago. Borneo is divided into
@@ -32,6 +35,7 @@ ui <- navbarPage(id = "tabs",
                                        above. Oil and natural gas have played a significant role in Brunei's development
                                        and wealth. Despite this wealth, the country prioritizes conservation of its biodiversity
                                        and tropical rainforests which make up more than 70% of Brunei."),
+                                     #fun facts bullet points
                                      h1(style="font-family: 'Georgia', serif;", "Fun Facts"),
                                      tags$ul(
                                        tags$li(style="font-size:13pt; font-family: 'Georgia', serif;", "Since a substantial amount of 
@@ -46,7 +50,9 @@ ui <- navbarPage(id = "tabs",
                                        
                                      )
                             ),
+                 #maps menu tab
                  navbarMenu(title = "Maps",
+                            #image map of region
                             tabPanel("Regions of Maritime Southeast Asia",
                                      img(src="South-China-Sea-Map.jpg",
                                          height="550",
@@ -58,21 +64,26 @@ ui <- navbarPage(id = "tabs",
                                        of Borneo, Timor-Leste near the southern parts of Indonesia, the Philippines northeast of Brunei, and 
                                        Singapore at the southern tip of the Malay Peninsula.")
                             ),
+                            #leaflet map of location in world
                             tabPanel("Brunei World Location",
                                      leafletOutput("worldmap", height = 700),
                                      
                                      ),
+                            #leaflet map of different regions in Brunei and density
                             tabPanel("Regional Map",
                                      leafletOutput("regionalmap", height = 700),
                                      p()
                                      ),
+                            #leaflet map of cities in Brunei
                             tabPanel("Cities Map",
                                      leafletOutput("countrymap", height = 700),
                                      p()
                             )
                  ),
+                 #demographics menu tab
                  nav_panel("Demographics",
                            tabsetPanel(
+                             #gender and ethnicity demo table
                              tabPanel("Population by Gender & Ethnicity",
                                       htmlOutput("demotable"),
                                       p(style="font-size:13pt; font-family: 'Georgia', serif;", "This demographic table shows
@@ -81,6 +92,7 @@ ui <- navbarPage(id = "tabs",
                                         is Brunei Maura which is where the capital is located. Additionally, from these
                                         four recorded years, the majority of citizens in all regions of Brunei are males and
                                         the largest ethnic group is Malay.")),
+                             #relgion demo table
                              tabPanel("Religion",
                                       htmlOutput("religiontable"),
                                       p(style="font-size:13pt; font-family: 'Georgia', serif;", "This demographic table shows
@@ -91,14 +103,18 @@ ui <- navbarPage(id = "tabs",
                                         the country's festivals and events revolve around the religion."))
                            )
                            ),
+                 #region comparison menu tab
                  nav_panel("Maritime Southeast Asia Region", 
                            tabsetPanel(
+                             #gdp graphs tab
                              tabPanel("GDP", 
                                       sidebarPanel(
+                                        #choose year range
                                         sliderTextInput("range1", "Year Range:",
                                                         choices = 1965:2022,
                                                         selected = c(1965,2022)
                                         ),
+                                        #choose country comparison
                                         selectInput("countries", "Countries:",
                                                     c("Brunei",
                                                       "Brunei & Timor-Leste",
@@ -113,12 +129,15 @@ ui <- navbarPage(id = "tabs",
                                           according to recent years' data, the GDP or economic wealth of Brunei is more than 5
                                           billion dollars larger than Timor-Leste.")
                                       ),
+                             #CO2 emissions graph tab
                             tabPanel("CO2 Emissions", 
                                       sidebarPanel(
+                                        #choose year range
                                         sliderTextInput("range2", "Year Range:",
                                                         choices = 1990:2020,
                                                         selected = c(1990,2020)
                                         ),
+                                        #choose country comparison
                                         selectInput("countries2", "Countries:",
                                                     c("Brunei",
                                                       "Brunei & Timor-Leste",
@@ -131,12 +150,15 @@ ui <- navbarPage(id = "tabs",
                                           Timor-Leste and Indonesia. Although Brunei is a much smaller country compared to Timor-Leste
                                           and Indonesia, Brunei still produces over 5 times more CO2 emissions.")
                                       ),
+                            #oil rents graph tab
                              tabPanel("Oil Rents", 
                                       sidebarPanel(
+                                        #choose year range
                                         sliderTextInput("range3", "Year Range:",
                                                         choices = 1970:2021,
                                                         selected = c(1970,2021)
                                         ),
+                                        #choose country comparison
                                         selectInput("countries3", "Countries:",
                                                     c("Brunei",
                                                       "Brunei & Timor-Leste",
@@ -151,8 +173,10 @@ ui <- navbarPage(id = "tabs",
                                       )
                              )
                            ),
+                 #swot analysis menu tab
                  nav_panel("SWOT", p("SWOT Analysis",
                                      panelsPage(
+                                       #strengths collapsible tab
                                        shinypanels::panel(title = "Strengths",
                                              collapsed = TRUE,
                                              width = 300,
@@ -190,6 +214,7 @@ ui <- navbarPage(id = "tabs",
                                                             style="display: block; margin-left: auto; margin-right: auto;")
                                                         )
                                              ),
+                                       #weaknesses collapsible tab
                                        shinypanels::panel(title = "Weaknesses",
                                              collapsed = TRUE,
                                              width = 300,
@@ -214,6 +239,7 @@ ui <- navbarPage(id = "tabs",
                                                           )
                                                         )
                                              ),
+                                       #opportunities collapsible tab
                                        shinypanels::panel(title = "Opportunities",
                                              width = 350,
                                              collapsed = TRUE,
@@ -245,6 +271,7 @@ ui <- navbarPage(id = "tabs",
                                                           )
                                                         )
                                              ),
+                                       #threats collapsible tab
                                        shinypanels::panel(title = "Threats",
                                              collapsed = TRUE,
                                              body = div(h3(style="font-family: 'Georgia', serif;",
@@ -277,6 +304,7 @@ ui <- navbarPage(id = "tabs",
                                        )
                                      )
                            ),
+                 #bibliography menu tab
                  navbarMenu(title = "Bibliography",
                             align = "right",
                             tabPanel(tags$a(href="https://en.wikipedia.org/wiki/Brunei",
